@@ -4,7 +4,8 @@ import frappe
 def profability(doc,method):
 
 
-    check_box_value = frappe.db.get_single_value('Selling Settings', 'custom_costing_rate_from_product_bundle')
+    # check_box_value = frappe.db.get_single_value('Selling Settings', 'custom_costing_rate_from_product_bundle')
+    check_box_value = doc.custom_costing_rate_from_product_bundle
     if not check_box_value :
         check_box_value = 0
 
