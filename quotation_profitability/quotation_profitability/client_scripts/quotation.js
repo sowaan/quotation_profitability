@@ -18,7 +18,7 @@ frappe.ui.form.on('Quotation', {
                     frappe.model.set_value(x.doctype , x.name , "custom_freight_charges_cost" , 0) ;
                     frappe.model.set_value(x.doctype , x.name , "custom_installation_charges_cost" , 0) ;
                     frappe.model.set_value(x.doctype , x.name , "custom_customs_cost" , 0) ;
-                    frappe.model.set_value(x.doctype , x.name , "custom_make_fields_read_only" , 1) ;
+                    // frappe.model.set_value(x.doctype , x.name , "custom_make_fields_read_only" , 1) ;
                     
                 });
                 frm.fields_dict["items"].grid.refresh() ;
@@ -42,4 +42,3 @@ frappe.ui.form.on('Quotation', {
 
 
 });
-        // frm.set_df_property("custom_costing_rate_from_product_bundle", "read_only", 1);
