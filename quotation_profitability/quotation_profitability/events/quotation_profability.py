@@ -28,7 +28,10 @@ def profability(doc,method):
                         sub_cost = sub_cost + ( (j.custom_costing_rate or 0) * (j.qty or 0) )
                         sig = 1
             if sig == 1 :
-                i.custom_total_landed_per_unit_cost = sub_cost - (i.custom_item_cogs or 0)
+                if i.qty > 0 :
+                    i.custom_total_landed_per_unit_cost = ( sub_cost/i.qty ) - (i.custom_item_cogs or 0) 
+                else :
+                    i.custom_total_landed_per_unit_cost = 0
                 i.custom_dry_cost_rate_calculates_from_product_bundle_amounts = 1
         
         
