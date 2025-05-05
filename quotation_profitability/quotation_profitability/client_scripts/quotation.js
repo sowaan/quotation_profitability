@@ -3,8 +3,8 @@ frappe.ui.form.on('Quotation', {
         // Ensure packed_items exists before trying to iterate
         if (frm.doc.packed_items && frm.doc.packed_items.length > 0) {
             frm.doc.packed_items.forEach((packed_item) => {
-                // Check if packed item exists and has an item_code
-                if (packed_item.item_code) {
+                // Check if packed item exists, has an item_code, and custom_costing_rate is not already set
+                if (packed_item.item_code && (!packed_item.custom_costing_rate || packed_item.custom_costing_rate === 0)) {
                     frappe.call({
                         method: "frappe.client.get_list",
                         args: {
@@ -27,11 +27,10 @@ frappe.ui.form.on('Quotation', {
                             }
                         }
                     });
-                    
-                }//if item_code exists
+                }
             });
         }
-    },
+    },    
 
     custom_costing_rate_from_product_bundle: function (frm) {
         if (frm.doc.custom_costing_rate_from_product_bundle == 1) {
