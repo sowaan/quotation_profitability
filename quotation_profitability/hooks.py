@@ -55,7 +55,8 @@ fixtures = [
 
 # include js in doctype views
 doctype_js = {
-    "Quotation" : "quotation_profitability/client_scripts/quotation.js"
+    "Quotation" : "quotation_profitability/client_scripts/quotation.js" ,
+    "Material Request" : "quotation_profitability/client_scripts/material_request.js"
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
