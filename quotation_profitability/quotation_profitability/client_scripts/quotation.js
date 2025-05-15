@@ -1,5 +1,14 @@
+
+
+
+
+
+
 frappe.ui.form.on('Quotation', {
+    
+    
     refresh: function (frm) {
+        console.log('_ora soft');
         // Ensure packed_items exists before trying to iterate
         if (frm.doc.packed_items && frm.doc.packed_items.length > 0) {
             frm.doc.packed_items.forEach((packed_item) => {
@@ -32,6 +41,8 @@ frappe.ui.form.on('Quotation', {
         }
     },    
 
+
+
     custom_costing_rate_from_product_bundle: function (frm) {
         if (frm.doc.custom_costing_rate_from_product_bundle == 1) {
             if (frm.doc.items) {
@@ -54,4 +65,14 @@ frappe.ui.form.on('Quotation', {
             }
         }
     },
+
+
 });
+
+
+
+
+
+
+
+
