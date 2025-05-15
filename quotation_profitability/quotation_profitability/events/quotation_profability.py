@@ -3,7 +3,6 @@ import frappe
 
 def profability(doc,method):
 
-
     # check_box_value = frappe.db.get_single_value('Selling Settings', 'custom_costing_rate_from_product_bundle')
     check_box_value = doc.custom_costing_rate_from_product_bundle
     if not check_box_value :
@@ -41,12 +40,6 @@ def profability(doc,method):
         totalcost = totalcost + i.custom_item_cogs_cost
         totaladditionalcost = totaladditionalcost + i.custom_total_landed_cost
 
-
-
-
-
-
-
     # Assign the totalcost to doc.custom_total_cost
     doc.custom_total_item_cogs = totalcost
     doc.custom_total_cogs = totalcost
@@ -64,3 +57,23 @@ def profability(doc,method):
     doc.custom_net_profit_percentage = doc.custom_net_profit * 100 / doc.custom_total_selling_volume
 
     doc.custom_grand_cost = doc.custom_total_dry_cost + doc.custom_total_cogs
+
+
+    sum_amount = 0
+    total_percent = 0
+    for child in doc.custom_boq_costing_list or [] :
+        sum_amount += child.amount or 0
+        total_percent += child.percent or 0
+    if total_percent > 100:
+        frappe.throw(_("Total percentage in BOQ Costing List cannot exceed 100%."))
+
+    doc.custom_boq_costing_total = sum_amount
+
+
+
+
+
+
+
+
+

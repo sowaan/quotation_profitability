@@ -41,8 +41,6 @@ frappe.ui.form.on('Quotation', {
         }
     },    
 
-
-
     custom_costing_rate_from_product_bundle: function (frm) {
         if (frm.doc.custom_costing_rate_from_product_bundle == 1) {
             if (frm.doc.items) {
@@ -66,8 +64,68 @@ frappe.ui.form.on('Quotation', {
         }
     },
 
+    
 
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+frappe.ui.form.on('BOQ Costing', {
+    percent: function(frm, cdt, cdn) {
+        const total = frm.doc.grand_total;
+        const row = locals[cdt][cdn];
+
+        if (row.percent > 0 && row.percent <= 100) {
+            row.amount = (total * row.percent) / 100;
+        } else {
+            frappe.throw(__('Please enter a valid percent between 0 and 100 in BOQ Costing List.'));
+            row.amount = 0;
+        }
+
+        frm.refresh_field('custom_boq_costing_list');
+
+        let sum = 0;
+
+        (frm.doc.custom_boq_costing_list || []).forEach(child => {
+            sum = sum + (child.amount || 0);
+        });
+
+
+        frm.set_value('custom_boq_costing_total', sum);
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
