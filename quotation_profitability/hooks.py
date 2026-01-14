@@ -35,6 +35,16 @@ fixtures = [
 	}
 
 ]
+# doc_events = {
+#     "Quotation": {
+#         "before_save": "quotation_profitability.boq_costing.build_dry_cost_summary"
+#     }
+# }
+
+
+
+
+
 # include js, css files in header of desk.html
 # app_include_css = "/assets/quotation_profitability/css/quotation_profitability.css"
 # app_include_js = "/assets/quotation_profitability/js/quotation_profitability.js"
@@ -56,6 +66,7 @@ fixtures = [
 # include js in doctype views
 doctype_js = {
     "Quotation" : "quotation_profitability/client_scripts/quotation.js" ,
+    "Budget" : "quotation_profitability/client_scripts/budget.js" ,
     "Material Request" : "quotation_profitability/client_scripts/material_request.js"
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
@@ -155,7 +166,10 @@ doc_events = {
 	"Quotation": {
 		"before_save": "quotation_profitability.quotation_profitability.events.quotation_profability.profability",
 	
-	}
+	},
+	"Quotation": {
+        "validate":"quotation_profitability.boq.build_dry_cost_summary"
+    }
 }
 
 # Scheduled Tasks

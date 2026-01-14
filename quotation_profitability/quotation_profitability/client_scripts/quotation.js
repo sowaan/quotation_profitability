@@ -1,12 +1,4 @@
-
-
-
-
-
-
 frappe.ui.form.on('Quotation', {
-    
-    
     refresh: function (frm) {
         console.log('_ora soft');
         // Ensure packed_items exists before trying to iterate
@@ -27,7 +19,7 @@ frappe.ui.form.on('Quotation', {
                             order_by: "valid_from desc",
                             limit_page_length: 1
                         },
-                        callback: function(r) {
+                        callback: function (r) {
                             if (r.message && r.message.length > 0) {
                                 const item_price = r.message[0];
                                 frappe.model.set_value(packed_item.doctype, packed_item.name, 'custom_costing_rate', item_price.price_list_rate);
@@ -39,7 +31,16 @@ frappe.ui.form.on('Quotation', {
                 }
             });
         }
-    },    
+       if (frm.doc.docstatus === 1 && !frm.doc.custom_budget_created) {
+            frm.add_custom_button(
+                __("Create Budget"),
+                function () {
+                    create_budget_from_quotation(frm);
+                },
+                __("Create")
+            );
+        }
+    },
 
     custom_costing_rate_from_product_bundle: function (frm) {
         if (frm.doc.custom_costing_rate_from_product_bundle == 1) {
@@ -64,73 +65,59 @@ frappe.ui.form.on('Quotation', {
         }
     },
 
-    
-
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-frappe.ui.form.on('BOQ Costing', {
-    percent: function(frm, cdt, cdn) {
-        const total = frm.doc.grand_total;
-        const row = locals[cdt][cdn];
-
-        if (row.percent > 0 && row.percent <= 100) {
-            row.amount = (total * row.percent) / 100;
-        } else {
-            frappe.throw(__('Please enter a valid percent between 0 and 100 in BOQ Costing List.'));
-            row.amount = 0;
-        }
-
-        frm.refresh_field('custom_boq_costing_list');
-
-        let sum = 0;
-
-        (frm.doc.custom_boq_costing_list || []).forEach(child => {
-            sum = sum + (child.amount || 0);
-        });
-
-
-        frm.set_value('custom_boq_costing_total', sum);
+function create_budget_from_quotation(frm) {
+    if (!frm.doc.custom_budgetting || frm.doc.custom_budgetting.length === 0) {
+        frappe.msgprint(__("No budget lines found."));
+        return;
     }
-});
+
+    if (!frm.doc.custom_project) {
+        frappe.msgprint(__("Project is mandatory to create Budget"));
+        return;
+    }
 
 
+    frappe.call({
+        method: "frappe.client.insert",
+        args: {
+            doc: {
+                doctype: "Budget",
+                company: frm.doc.company,
+                fiscal_year: "2026", //frappe.defaults.get_user_default("fiscal_year"),
+                // fiscal_year: frappe.defaults.get_user_default("fiscal_year"),
+                budget_against: "Project",
+                project: frm.doc.custom_project,
 
+                accounts: frm.doc.custom_budgetting.map(row => ({
+                    account: row.gl_account,
+                    budget_amount: row.cost_amount,
+                    // project: frm.doc.custom_project   // 🔴 THIS WAS MISSING
+                }))
+            }
+        },
+        // callback: function (r) {
+        //     if (!r.exc) {
+        //         frappe.msgprint(__("Budget created successfully"));
+        //         frappe.set_route("Form", "Budget", r.message.name);
+        //     }
+        // }
+        callback: function (r) {
+    if (!r.exc) {
+        frappe.msgprint(__("Budget created successfully"));
 
+        // mark quotation
+        frappe.db.set_value(
+            "Quotation",
+            frm.doc.name,
+            "custom_budget_created",
+            1
+        );
 
+        frappe.set_route("Form", "Budget", r.message.name);
+    }
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    });
+}
