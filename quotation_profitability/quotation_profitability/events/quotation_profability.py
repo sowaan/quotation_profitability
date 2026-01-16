@@ -7,7 +7,7 @@ def profability(doc,method):
     check_box_value = doc.custom_costing_rate_from_product_bundle
     if not check_box_value :
         check_box_value = 0
-
+    frappe.log_error ("check box value", f"check: {check_box_value}")
     totalcost = 0
     totaladditionalcost = 0
     
@@ -38,6 +38,7 @@ def profability(doc,method):
         i.custom_total_costs = i.custom_total_landed_cost + i.custom_item_cogs_cost
 
         totalcost = totalcost + i.custom_item_cogs_cost
+        frappe.log_error("I am here", f"total landed cost: {i.cusocustom_total_landed_costm}")
         totaladditionalcost = totaladditionalcost + i.custom_total_landed_cost
 
     # Assign the totalcost to doc.custom_total_cost
